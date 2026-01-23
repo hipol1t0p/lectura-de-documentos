@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ServicoLecturaDocumentos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+86335d690f03f7da8140891ca7d3aefdeaf6d0c0")]
 [assembly: System.Reflection.AssemblyProductAttribute("ServicoLecturaDocumentos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ServicoLecturaDocumentos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
