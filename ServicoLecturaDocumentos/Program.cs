@@ -289,7 +289,7 @@ namespace ServicoLecturaDocumentos
                 if (File.ReadAllLines(ruta).Any(linea => !string.IsNullOrWhiteSpace(linea)))
                 {
                     Console.Clear();
-                    Console.WriteLine($"\n\nEl documento en la ruta: {ruta} contiene datos.");
+                    Console.Write($"\n\nEl documento en la ruta: {ruta} contiene datos.");
                     RegistroEventos(DateTime.Now, $"El documento en la ruta: {ruta} contiene datos.");
                     Console.ReadKey();
 
@@ -298,7 +298,7 @@ namespace ServicoLecturaDocumentos
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine($"\n\nEl documento en la ruta: {rutaDocumento} NO contiene datos.");
+                    Console.Write($"\n\nEl documento en la ruta: {rutaDocumento} NO contiene datos.");
                     RegistroEventos(DateTime.Now, $"El documento en la ruta: {rutaDocumento} NO contiene datos.");
                     Console.ReadKey();
 
@@ -319,7 +319,7 @@ namespace ServicoLecturaDocumentos
                 if (hoja.Dimension != null && hoja.Dimension.Rows > 0)
                 {
                     Console.Clear();
-                    Console.WriteLine($"\n\nEl documento en la ruta: {ruta} contiene datos.");
+                    Console.Write($"\n\nEl documento en la ruta: {ruta} contiene datos.");
                     RegistroEventos(DateTime.Now, $"El documento en la ruta: {ruta} contiene datos.");
                     Console.ReadKey();
                     return true;
@@ -327,7 +327,7 @@ namespace ServicoLecturaDocumentos
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine($"\n\nEl documento en la ruta: {rutaDocumento} NO contiene datos.");
+                    Console.Write($"\n\nEl documento en la ruta: {rutaDocumento} NO contiene datos.");
                     RegistroEventos(DateTime.Now, $"El documento en la ruta: {rutaDocumento} NO contiene datos.");
                     Console.ReadKey();
                     return false;
