@@ -1,8 +1,22 @@
 {
   "version": 2,
-  "dgSpecHash": "XzqNsYisIxQ=",
+  "dgSpecHash": "3u3yjdJYJwA=",
   "success": true,
-  "projectFilePath": "E:\\DARS - VS\\ServicoLecturaDocumentos\\ServicoLecturaDocumentos\\ServicoLecturaDocumentos.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "E:\\DARS - VS\\P Proyecto APEC\\ServicoLecturaDocumentos\\ServicoLecturaDocumentos.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\drodriguez\\.nuget\\packages\\epplus\\8.4.1\\epplus.8.4.1.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\epplus.interfaces\\8.4.0\\epplus.interfaces.8.4.0.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\microsoft.extensions.configuration\\8.0.0\\microsoft.extensions.configuration.8.0.0.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\8.0.0\\microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\microsoft.extensions.configuration.fileextensions\\8.0.1\\microsoft.extensions.configuration.fileextensions.8.0.1.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\microsoft.extensions.configuration.json\\8.0.1\\microsoft.extensions.configuration.json.8.0.1.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\8.0.0\\microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\microsoft.extensions.fileproviders.physical\\8.0.0\\microsoft.extensions.fileproviders.physical.8.0.0.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\microsoft.extensions.filesystemglobbing\\8.0.0\\microsoft.extensions.filesystemglobbing.8.0.0.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\microsoft.io.recyclablememorystream\\3.0.1\\microsoft.io.recyclablememorystream.3.0.1.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\system.security.cryptography.pkcs\\8.0.1\\system.security.cryptography.pkcs.8.0.1.nupkg.sha512",
+    "C:\\Users\\drodriguez\\.nuget\\packages\\system.security.cryptography.xml\\8.0.2\\system.security.cryptography.xml.8.0.2.nupkg.sha512"
+  ],
   "logs": []
 }
