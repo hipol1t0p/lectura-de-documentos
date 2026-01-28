@@ -73,7 +73,7 @@ namespace ServicoLecturaDocumentos
 
                     default:
                         Documento.RegistroEventosLog(DateTime.Now, "Se ingreso una opcion incorrecta.");
-                        Console.WriteLine("OPCION NO VALIDA, INTENTE DE NUEVO....");
+                        Console.WriteLine("\nFuera del rango de OPCION, INTENTE DE NUEVO....");
                         Console.ReadKey();
                         break;
                 }
@@ -139,13 +139,13 @@ namespace ServicoLecturaDocumentos
                         break;
 
                     default:
-                        Console.WriteLine("OPCION NO VALIDA, INTENTE DE NUEVO....");
+                        Console.WriteLine("\nFuera del rango de OPCION, INTENTE DE NUEVO....");
                         Documento.RegistroEventosLog(DateTime.Now, "Se ingreso una opcion incorrecta en el sub menu.");
                         Console.ReadKey();
                         break;
                 }
 
-            } while (false);
+            } while (opSeleccionadaSubMenu !=3);
         }
 
         /*protected void VolverMenu()
@@ -437,6 +437,7 @@ namespace ServicoLecturaDocumentos
             { 
                 if (ValidarExistenciaDocumento()) 
                 {
+                    Console.Clear();
                     RegistroEventosLog(DateTime.Now, $"Apertura de documento en la ruta \"{RutaDocumento}\"");
                     Process.Start(new ProcessStartInfo { FileName = RutaDocumento, UseShellExecute = true });
                     Console.WriteLine("Docuemnto mostrado correctamente");
