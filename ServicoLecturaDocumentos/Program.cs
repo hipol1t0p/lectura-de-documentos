@@ -1,4 +1,7 @@
-﻿using OfficeOpenXml;
+﻿using Microsoft.VisualBasic.Logging;
+using OfficeOpenXml;
+using System.Diagnostics;
+using System.Reflection.Metadata;
 
 namespace ServicoLecturaDocumentos
 {
@@ -7,26 +10,16 @@ namespace ServicoLecturaDocumentos
         [STAThread]
         static void Main(string[] args)
         {
-            Documento servicio = new Documento();
-
-            servicio.MenuOpcionesDocumento();
-
+            Menus.MenuOpcionesDocumento();
         }
     }
 
 
-    public class Documento
+    public class Menus 
     {
-        string rutaArchivoLog = @"./Log.txt";
-        protected string rutaDocumento { get; set; }
-
-        public Documento()
+        public static void MenuOpcionesDocumento()
         {
-            rutaDocumento = "";
-        }
-        public void MenuOpcionesDocumento()
-        {
-            CrearArchivoLog();
+            Documento.CrearArchivoLog();
 
             int opSeleccionadaMenu;
 
@@ -44,7 +37,7 @@ namespace ServicoLecturaDocumentos
 
                 if (!int.TryParse(Console.ReadLine(), out opSeleccionadaMenu))
                 {
-                    RegistroEventos(DateTime.Now, "Se ingreso una opcion incorrecta.");
+                    // RegistroEventosLog(DateTime.Now, "Se ingreso una opcion incorrecta.");
                     Console.Write("\nOpcion no valida, presione enter para continuar....");
                     Console.ReadKey();
                     continue;
@@ -56,21 +49,22 @@ namespace ServicoLecturaDocumentos
 
                         Console.Clear();
                         Console.Write("Ingrese la ruta del documento: ");
-                        rutaDocumento = Console.ReadLine() ?? "";
-                        ValidarExistenciaDocumento(rutaDocumento);
+                        new Documento(Console.ReadLine() ?? "");
+                        Documento.ValidarExistenciaDocumento();
                         break;
 
                     case 2:
-                        SubMenuOpcionesDocumentos();
+                        SubMenuOpcionesDocumentos(opSeleccionadaMenu);
                         break;
 
                     case 3:
-                        MostrarDocumento();
+                        SubMenuOpcionesDocumentos(opSeleccionadaMenu);
+                        //Documento.MostrarDocumento();
+                        //if (Documento.ValidarExistenciaDocumento()) { Documento.MostrarDocumento(); }
                         break;
 
                     case 4:
-                        MostrarLog();
-                        Console.WriteLine("SALIENDO DEL PROGRAMA....");
+                        Documento.MostrarLog();
                         break;
 
                     case 5:
@@ -78,9 +72,9 @@ namespace ServicoLecturaDocumentos
                         break;
 
                     default:
-                        RegistroEventos(DateTime.Now, "Se ingreso una opcion incorrecta.");
-                        Console.WriteLine("OPCION NO VALIDA, INTENTE DE NUEVO....");
-
+                        Documento.RegistroEventosLog(DateTime.Now, "Se ingreso una opcion incorrecta.");
+                        Console.WriteLine("\nFuera del rango de OPCION, INTENTE DE NUEVO....");
+                        Console.ReadKey();
                         break;
                 }
 
@@ -88,13 +82,12 @@ namespace ServicoLecturaDocumentos
 
         }
 
-        void SubMenuOpcionesDocumentos()
+        public static void SubMenuOpcionesDocumentos(int M_P)
         {
+            int opSeleccionadaSubMenu;
 
             do
             {
-                int opSeleccionadaSubMenu;
-
                 Console.Clear();
                 Console.Write($"==========SELECIONE UNA OPCION 1-3 ========== \n\n" +
                               $"1. Seleccionar el documento desde una ventana emergente\n" +
@@ -106,7 +99,7 @@ namespace ServicoLecturaDocumentos
                 {
                     Console.Write("\nOpcion no valida, presione enter para continuar....");
                     Console.ReadKey();
-                    RegistroEventos(DateTime.Now, "Se ingreso una opcion incorrecta en el sub menu.");
+                    Documento.RegistroEventosLog(DateTime.Now, "Se ingreso una opcion incorrecta en el sub menu.");
                     continue;
                 }
 
@@ -114,36 +107,85 @@ namespace ServicoLecturaDocumentos
                 {
                     case 1:
 
-                        ValidarDatosDocumento(SelecionarDocumento());
-                        MenuOpcionesDocumento();
+                        if (M_P == 2) 
+                        { 
+                            new Documento(Documento.SelecionarDocumento()).ValidarDatosDocumento(1); 
+                        }
+                        else if (M_P == 3) 
+                        {
+                            new Documento(Documento.SelecionarDocumento()).MostrarDocumento(1);
+                        }
+
                         break;
 
                     case 2:
 
-                        Console.Write("Ingrese la ruta del documento: ");
-                        rutaDocumento = Console.ReadLine() ?? ""; // posible mejora como la opciones de los menus
+                        if (M_P == 2) 
+                        {
+                            Console.Clear();
+                            Console.Write("Ingrese la ruta del documento: ");
+                            new Documento(Console.ReadLine() ?? "").ValidarDatosDocumento(2);
+                        }
+                        else if (M_P == 3) 
+                        {
+                            Console.Clear();
+                            Console.Write("Ingrese la ruta del documento: ");
+                            new Documento(Console.ReadLine() ?? "").MostrarDocumento(2);
+                        }
 
-                        ValidarExistenciaDocumento(rutaDocumento);
-
-                        RegistroEventos(DateTime.Now, $"Documento ingresado manualmente en la ruta: {rutaDocumento}");
                         break;
 
                     case 3:
-                        MenuOpcionesDocumento();
                         break;
 
                     default:
-                        Console.WriteLine("OPCION NO VALIDA, INTENTE DE NUEVO....");
-                        RegistroEventos(DateTime.Now, "Se ingreso una opcion incorrecta en el sub menu.");
+                        Console.WriteLine("\nFuera del rango de OPCION, INTENTE DE NUEVO....");
+                        Documento.RegistroEventosLog(DateTime.Now, "Se ingreso una opcion incorrecta en el sub menu.");
+                        Console.ReadKey();
                         break;
                 }
 
-
-            } while (true);
+            } while (opSeleccionadaSubMenu !=3);
         }
 
+        /*protected void VolverMenu()
+        {
+            Console.Write("Desea volver al menu s/n");
+            string opcion = Console.ReadLine() ?? "s";
 
-        public string SelecionarDocumento()
+            if (opcion == "s" || opcion != "n") 
+            { 
+                MenuOpcionesDocumento(); // RegistroEventosLog(DateTime.Now, "Regreso al menu principal.");
+    }
+            else { SalirServicio(); }
+        } */  
+
+        private static void SalirServicio()
+        {
+            Console.Clear();
+            Documento.RegistroEventosLog(DateTime.Now, "Programa Finalizado");
+            Console.WriteLine($"==================" +
+                          $"Gracias por usar nuestros servicios" +
+                          $"=====================");
+            return;
+        }
+    }
+
+    public class Documento
+    {
+        public static string RutaDocumento { get; set; }
+        protected static string RutaArchivoLog { get { return @"./Log.txt"; } }
+
+        static Documento()
+        {
+            RutaDocumento = String.Empty;
+        }
+
+        public Documento(string ruta)
+        {
+            RutaDocumento = ruta;
+        }
+        public static string SelecionarDocumento()
         {
             OpenFileDialog seleccionDocumento = new OpenFileDialog();
 
@@ -152,19 +194,19 @@ namespace ServicoLecturaDocumentos
                 if (seleccionDocumento.ShowDialog() == DialogResult.OK)
                 {
                     Console.Clear();
-                    rutaDocumento = seleccionDocumento.FileName;
+                    RutaDocumento = seleccionDocumento.FileName;
 
-                    if (Path.GetExtension(rutaDocumento) == ".csv" || Path.GetExtension(rutaDocumento) == ".xlsx")
+                    if (Path.GetExtension(RutaDocumento) == ".csv" || Path.GetExtension(RutaDocumento) == ".xlsx")
                     {
-                        RegistroEventos(DateTime.Now, $"Documento seleccionado en la ruta: {rutaDocumento}");
+                        RegistroEventosLog(DateTime.Now, $"Documento seleccionado en la ruta: {RutaDocumento} valido.");
 
                     }
                     else
                     {
                         Console.WriteLine("\n\nEl formato del documento seleccionado no es valido, por favor seleccione un documento con extension .CSV o .XLSX");
-                        Console.Write("\nPresione enter para continuar.... ");
+                        Console.Write("\nPresione enter para volver a selecionar otro. ");
                         Console.ReadKey();
-                        RegistroEventos(DateTime.Now, $"El formato del documento seleccionado no es valido: {rutaDocumento}");
+                        RegistroEventosLog(DateTime.Now, $"El formato del documento seleccionadoen la ruta {RutaDocumento} no es valido");
 
                         continue;
                     }
@@ -172,201 +214,239 @@ namespace ServicoLecturaDocumentos
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("\n\nNo se selecciono ningun documento.  ");
-                    Console.Write("\nPresione enter para continuar.... ");
+                    Console.WriteLine("\n\nNo fue selecciono ningun documento.");
+                    Console.Write("\nPresione enter para continuar. ");
                     Console.ReadKey();
-                    RegistroEventos(DateTime.Now, "Se cancelo la seleccion del documento.");
-                    SubMenuOpcionesDocumentos();
+                    RegistroEventosLog(DateTime.Now, "Se cancelo la seleccion del documento.");
+                    Menus.SubMenuOpcionesDocumentos(0);
                     break;
+                    //continue;
                 }
 
-            } while ((Path.GetExtension(rutaDocumento) != ".csv") && (Path.GetExtension(rutaDocumento) != ".xlsx"));
+            } while ((Path.GetExtension(RutaDocumento) != ".csv") && (Path.GetExtension(RutaDocumento) != ".xlsx"));
 
-            return rutaDocumento;
-        } //Tereminado - Posible retoques
+            return RutaDocumento;
+        }
 
-        public void CrearArchivoLog()
-        {
-            if (!File.Exists(rutaArchivoLog))
+        public static void CrearArchivoLog()
+        {            
+            string tituloLog = "=============== REGISTROS DEL PROGRAMA ===============";
+
+            if (!File.Exists(RutaArchivoLog))
             {
-                File.WriteAllText(rutaArchivoLog, "=============== REGISTROS DEL PROGRAMA ===============\n\n");
-                RegistroEventos(DateTime.Now, "Creacion del archivo \"Log.txt\"");
+                File.WriteAllText(RutaArchivoLog, $"{tituloLog}\n\n");
+                RegistroEventosLog(DateTime.Now, "Creacion del archivo \"Log.txt\"");
             }
 
-            else if (new FileInfo(rutaArchivoLog).Length == 0)
+            else 
             {
-                File.WriteAllText(rutaArchivoLog, "========== REGISTROS DEL PROGRAMA ==========\n");
-                RegistroEventos(new FileInfo(rutaArchivoLog).CreationTime, "Creacion del archivo\"Log.txt\"");
+                string[] lineasArchivoLog = File.ReadAllLines(RutaArchivoLog);
+
+                if ((lineasArchivoLog[0] != tituloLog) || (lineasArchivoLog.Length == 0))
+                {
+                    File.WriteAllText(RutaArchivoLog, $"{tituloLog}\n\n");
+                    RegistroEventosLog(new FileInfo(RutaArchivoLog).CreationTime, "Creacion del archivo\"Log.txt\"");
+                    RegistroEventosLog(DateTime.Now, "Reescritura del archivo");
+                }
             }
+            
+            RegistroEventosLog(DateTime.Now, "Programa Iniciado.");
+        } // Terminado
 
-            RegistroEventos(DateTime.Now, "Programa Iniciado.");
-        } // Terminado - Posible mejora para la validacion de los eventos
-
-        public void RegistroEventos(DateTime fecha, string evento)
+        public static void RegistroEventosLog(DateTime fecha, string evento)
         {
-            File.AppendAllText(rutaArchivoLog, $"{fecha} : {evento}" + Environment.NewLine);
+            File.AppendAllText(RutaArchivoLog, $"{fecha} : {evento}" + Environment.NewLine);
         } // Culminado 
 
-        public bool ValidarExistenciaDocumento(string ruta)
+        public static bool ValidarExistenciaDocumento()
         {
             Console.Clear();
 
-            RegistroEventos(DateTime.Now, $"Iniciando validacion de existencia del documento en la ruta {ruta}.");
+            RegistroEventosLog(DateTime.Now, $"Iniciando validacion de existencia del documento en la ruta \"{RutaDocumento} \"");
 
-            if ((File.Exists(ruta) && ruta != "") && (Path.GetExtension(ruta) == ".csv" || Path.GetExtension(ruta) == ".xlsx"))
+            if (File.Exists(RutaDocumento))
             {
-                RegistroEventos(DateTime.Now, $"Consultando exitencia del documento en la ruta: {ruta}");
-                Console.WriteLine($"El archivo en la ruta: {ruta}  \"EXISTE.\"\n\n");
-                Console.Write($"Presione enter para continuar ------> ");
-                RegistroEventos(DateTime.Now, $"El archivo en la ruta: {ruta} fue encontrado");
-                Console.ReadKey();
-
-                return true;
-            }
-
-            else if ((File.Exists(ruta) && ruta != "") && (Path.GetExtension(ruta) != ".csv" && Path.GetExtension(ruta) != ".xlsx"))
-            {
-                RegistroEventos(DateTime.Now, $"Consultando exitencia del documento en la ruta: {ruta}");
-                Console.WriteLine($"El archivo en la ruta: {ruta} no es un archivo con extencion valida .csv / .xlsx\n\n");
-                Console.Write($"Presione enter para continuar ------> ");
-                RegistroEventos(DateTime.Now, $"El archivo en la ruta: {ruta} no es un archivo con extencion valida .csv / .xlsx");
-                Console.ReadKey();
-
-                return false;
-            }
-
-            else if (!File.Exists(ruta) && ruta != "")
-            {
-                RegistroEventos(DateTime.Now, $"Consultando exitencia del documento en la ruta: {ruta}\n\n");
-                Console.WriteLine($"El archivo en la ruta: {ruta} NO EXISTE.\n\n");
-                Console.Write($"Presione enter para continuar ------> ");
-                RegistroEventos(DateTime.Now, $"El archivo en la ruta: {ruta} no fue encontrado");
-                Console.ReadKey();
-
-                return false;
-            }
-
-            else
-            {
-                Console.WriteLine($"La ruta ingresada esta vacia.\n\n");
-                Console.Write($"Presione enter para continuar ------> ");
-                RegistroEventos(DateTime.Now, "Se ingreso una ruta vacia");
-                Console.ReadKey();
-
-                return false;
-            }
-
-        } // Terminado se podria simplificar tal vez
-
-        void VolverMenu()
-        {
-            Console.Write("Desea volver al menu s/n");
-            string opcion = Console.ReadLine() ?? "s";
-
-            if (opcion == "s" || opcion != "n") { MenuOpcionesDocumento(); RegistroEventos(DateTime.Now, "Regreso al menu principal."); }
-            else { SalirServicio(); }
-        } // Terminados - Pendientes de usar
-
-        void SalirServicio()
-        {
-            Console.Clear();
-            RegistroEventos(DateTime.Now, "Programa Finalizado");
-            Console.WriteLine($"=================================" +
-                          $"Gracias por usar nuestros servicios" +
-                          $"=================================");
-
-            Console.ReadKey();
-            Environment.Exit(0);
-        } // Terminado - Pendientes de usar
-
-        public bool ValidarDatosDocumento(string ruta)
-        {
-            RegistroEventos(DateTime.Now, $"Consultando existencia de datos en el documento de la ruta: {rutaDocumento}");
-
-            if (ConocerExtencionDocumento())
-            {
-
-                if (File.ReadAllLines(ruta).Any(linea => !string.IsNullOrWhiteSpace(linea)))
+                if (Path.GetExtension(RutaDocumento) == ".csv" || Path.GetExtension(RutaDocumento) == ".xlsx")
                 {
-                    Console.Clear();
-                    Console.Write($"\n\nEl documento en la ruta: {ruta} contiene datos.");
-                    RegistroEventos(DateTime.Now, $"El documento en la ruta: {ruta} contiene datos.");
+                    //RegistroEventosLog(DateTime.Now, $"Consultando exitencia del documento en la ruta: {RutaDocumento}");
+                    Console.WriteLine($"El archivo en la ruta ingresada\"EXISTE.\"\n\n");
+                    Console.Write($"Presione enter para continuar ------> ");
+                    RegistroEventosLog(DateTime.Now, $"El archivo en la ruta: {RutaDocumento} fue encontrado");
                     Console.ReadKey();
 
                     return true;
                 }
                 else
                 {
-                    Console.Clear();
-                    Console.Write($"\n\nEl documento en la ruta: {rutaDocumento} NO contiene datos.");
-                    RegistroEventos(DateTime.Now, $"El documento en la ruta: {rutaDocumento} NO contiene datos.");
+                    Console.WriteLine($"El archivo en la ruta ingresada no es un archivo con extencion valida .csv / .xlsx\n\n");
+                    Console.Write($"Presione enter para continuar ------> ");
+                    RegistroEventosLog(DateTime.Now, $"El archivo en la ruta: {RutaDocumento} no es un archivo con extencion valida .csv / .xlsx");
                     Console.ReadKey();
 
                     return false;
                 }
             }
-
             else
             {
-                ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization"); //This will also set the Company property to the organization name provided in the argument.
+                Console.WriteLine($"No existe el archivo en la ruta ingresada\n\n");
+                Console.Write($"Presione enter para continuar ------> ");
+                RegistroEventosLog(DateTime.Now, $"No existe el archivo en la ruta ingresada");
+                Console.ReadKey();
 
-                //Linea necesaria para EPPlus version 5 en adelante para uso no comercial
+                return false;
+                /*Console.WriteLine($"La ruta ingresada esta vacia.\n\n");
+                Console.Write($"Presione enter para continuar ------> ");
+                RegistroEventosLog(DateTime.Now, "Se ingreso una ruta vacia");
+                Console.ReadKey();
 
-                using var documentoExcel = new ExcelPackage(new FileInfo(rutaDocumento));
+                return false;*/
+            }
 
-                var hoja = documentoExcel.Workbook.Worksheets[0];
+        } // Terminado
 
-                if (hoja.Dimension != null && hoja.Dimension.Rows > 0)
+        public void ValidarDatosDocumento(int opcion)
+        {
+            RegistroEventosLog(DateTime.Now, $"Iniciando validacion de existencia de datos en el documento de la ruta: {RutaDocumento}");
+
+            if (opcion == 1)
+            {
+                if (RutaDocumento != String.Empty)
                 {
-                    Console.Clear();
-                    Console.Write($"\n\nEl documento en la ruta: {ruta} contiene datos.");
-                    RegistroEventos(DateTime.Now, $"El documento en la ruta: {ruta} contiene datos.");
-                    Console.ReadKey();
-                    return true;
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.Write($"\n\nEl documento en la ruta: {rutaDocumento} NO contiene datos.");
-                    RegistroEventos(DateTime.Now, $"El documento en la ruta: {rutaDocumento} NO contiene datos.");
-                    Console.ReadKey();
-                    return false;
+                    if (Path.GetExtension(RutaDocumento) == ".csv")
+                    {
+                        if (File.ReadAllLines(RutaDocumento).Any(linea => !string.IsNullOrWhiteSpace(linea)))
+                        {
+                            //Console.Clear();
+                            Console.Write($"\n\nEl documento en la ruta contiene datos. Presione enter para continuar. ");
+                            RegistroEventosLog(DateTime.Now, $"El documento en la ruta: {RutaDocumento} contiene datos.");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.Write($"\n\nEl documento en la ruta no contiene datos. Presione enter para continuar. ");
+                            RegistroEventosLog(DateTime.Now, $"El documento en la ruta: {RutaDocumento} NO contiene datos.");
+                            Console.ReadKey();
+                        }
+                    }
+
+                    else
+                    {
+                        ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization"); //This will also set the Company property to the organization name provided in the argument.
+
+                        //Linea necesaria para EPPlus version 5 en adelante para uso no comercial
+
+                        //using var documentoExcel = new ExcelPackage(new FileInfo(RutaDocumento));
+                        var documentoExcel = new ExcelPackage(new FileInfo(RutaDocumento));
+
+                        var hoja = documentoExcel.Workbook.Worksheets[0];
+
+                        if (hoja.Dimension != null && hoja.Dimension.Rows > 0)
+                        {
+                            Console.Clear();
+                            Console.Write($"\n\nEl documento en la ruta contiene datos. Presione enter para continuar. ");
+                            RegistroEventosLog(DateTime.Now, $"El documento en la ruta: {RutaDocumento} contiene datos.");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.Write($"\n\nEl documento en la ruta no contiene datos. Presione enter para continuar.");
+                            RegistroEventosLog(DateTime.Now, $"El documento en la ruta: {RutaDocumento} NO contiene datos.");
+                            Console.ReadKey();
+                        }
+                    }
+
                 }
             }
 
+            else 
+            {
+                if (ValidarExistenciaDocumento())
+                {
+                    if (Path.GetExtension(RutaDocumento) == ".csv")
+                    {
+                        if (File.ReadAllLines(RutaDocumento).Any(linea => !string.IsNullOrWhiteSpace(linea)))
+                        {
+                            //Console.Clear();
+                            Console.Write($"\n\nEl documento en la ruta contiene datos. Presione enter para continuar. ");
+                            RegistroEventosLog(DateTime.Now, $"El documento en la ruta: {RutaDocumento} contiene datos.");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.Write($"\n\nEl documento en la ruta no contiene datos. Presione enter para continuar. ");
+                            RegistroEventosLog(DateTime.Now, $"El documento en la ruta: {RutaDocumento} NO contiene datos.");
+                            Console.ReadKey();
+                        }
+                    }
+
+                    else
+                    {
+                        ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization"); 
+
+                        var documentoExcel = new ExcelPackage(new FileInfo(RutaDocumento));
+
+                        var hoja = documentoExcel.Workbook.Worksheets[0];
+
+                        if (hoja.Dimension != null && hoja.Dimension.Rows > 0)
+                        {
+                            Console.Clear();
+                            Console.Write($"\n\nEl documento en la ruta contiene datos. Presione enter para continuar. ");
+                            RegistroEventosLog(DateTime.Now, $"El documento en la ruta: {RutaDocumento} contiene datos.");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.Write($"\n\nEl documento en la ruta no contiene datos. Presione enter para continuar.");
+                            RegistroEventosLog(DateTime.Now, $"El documento en la ruta: {RutaDocumento} NO contiene datos.");
+                            Console.ReadKey();
+                        }
+                    }
+
+                }
+            }
 
         } // Terminado - Completo
 
-
-        bool ConocerExtencionDocumento()
+        public static void MostrarLog()
         {
-            RegistroEventos(DateTime.Now, $"Consultando la extencion del documento de la ruta: {rutaDocumento}");
+            RegistroEventosLog(DateTime.Now, "Apertura de archivo de registro de sistema \"(Log.txt)\"");
+            string rutaCompletaLog = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, RutaArchivoLog);
 
-            if (Path.GetExtension(rutaDocumento) == ".csv")
-            {
-                RegistroEventos(DateTime.Now, $"El documento en la ruta: {rutaDocumento} es un archivo .CSV");
-
-                return true;
-            }
-            else
-            {
-                RegistroEventos(DateTime.Now, $"El documento en la ruta: {rutaDocumento} es un archivo .XLSX");
-
-                return false;
-            }
-        } // Terminado - Pendientes de usar
-
-
-        // Metodos pendientes de terminar;
-        public void MostrarDocumento()
-        {
+            Process.Start(new ProcessStartInfo { FileName = rutaCompletaLog, UseShellExecute = true });
 
         }
 
-        public void MostrarLog()
+        public void MostrarDocumento(int opcion)
         {
+            if (opcion == 1) 
+            {
+                if (RutaDocumento != String.Empty)
+                {
+                    RegistroEventosLog(DateTime.Now, $"Apertura de documento en la ruta \"{RutaDocumento}\"");
+                    Process.Start(new ProcessStartInfo { FileName = RutaDocumento, UseShellExecute = true });
+                    Console.WriteLine("Docuemnto mostrado correctamente");
+                    Console.ReadKey();
+                }
+            }
+
+            else 
+            { 
+                if (ValidarExistenciaDocumento()) 
+                {
+                    Console.Clear();
+                    RegistroEventosLog(DateTime.Now, $"Apertura de documento en la ruta \"{RutaDocumento}\"");
+                    Process.Start(new ProcessStartInfo { FileName = RutaDocumento, UseShellExecute = true });
+                    Console.WriteLine("Docuemnto mostrado correctamente");
+                    Console.ReadKey();
+                }
+            }
 
         }
 
     }
+
 }
